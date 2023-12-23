@@ -9,3 +9,4 @@ services:
       - '5432:5432'
     volumes:
       - ./postgress_vol:/var/lib/postgresql/data
+    restart: no
