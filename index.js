@@ -1,81 +1,35 @@
-require('dotenv').config()
-const { Sequelize, Model, DataTypes } = require('sequelize')
 const express = require('express')
+require('express-async-errors')
+const {
+  errorHandler,
+  unknownEndpoint,
+  tokenExtractor
+} = require('./middleware')
+
 const app = express()
 
+const { PORT } = require('./util/config')
+const { connectToDatabase } = require('./util/db')
+const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
+
 app.use(express.json())
+app.use(tokenExtractor)
 
-const sequelize = new Sequelize(process.env.DB_URL, {
-  logging: false
-})
+app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
-class Blog extends Model {}
-Blog.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    author: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    url: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    title: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    likes: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    }
-  },
-  {
-    sequelize,
-    underscored: true,
-    timestamps: false,
-    modelName: 'blog'
-  }
-)
-Blog.sync()
+app.use(unknownEndpoint)
 
-app.get('/api/blogs', async (req, res) => {
-  try {
-    await sequelize.authenticate()
-    const blogs = await Blog.findAll()
-    res.json(blogs)
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-  }
-})
+app.use(errorHandler)
 
-app.post('/api/blogs', async (req, res) => {
-  try {
-    await sequelize.authenticate()
-    const blog = await Blog.create(req.body)
-    console.log(JSON.stringify(blog, null, 2))
-    res.json(blog)
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-  }
-})
-
-app.delete('/api/blogs/:id', async (req, res) => {
-  try {
-    await sequelize.authenticate()
-    const blog = await Blog.findByPk(req.params.id)
-    await blog.destroy()
-    res.status(204).end()
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-  }
-})
-
-const PORT = 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+const start = async () => {
+  await connectToDatabase()
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
+}
+// TODO Continue from 13.9
+start()
