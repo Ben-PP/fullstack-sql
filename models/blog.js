@@ -23,7 +23,8 @@ Blog.init(
     },
     likes: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     }
   },
   {

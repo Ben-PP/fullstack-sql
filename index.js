@@ -1,5 +1,6 @@
 const express = require('express')
 require('express-async-errors')
+const cors = require('cors')
 const {
   errorHandler,
   unknownEndpoint,
@@ -7,6 +8,7 @@ const {
 } = require('./middleware')
 
 const app = express()
+app.use(cors())
 
 const { PORT } = require('./util/config')
 const { connectToDatabase } = require('./util/db')
