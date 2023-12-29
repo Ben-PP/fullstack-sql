@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "reset-db": "node resetDB.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "postgres:up": "docker-compose up -d",
     "postgres:down": "docker-compose down",

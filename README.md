@@ -19,4 +19,5 @@ Part 13 of the fullstack mooc from helnki university.
 
 ### Psql
 
-Connect to psql with `npm run psql`
+On linux connect to psql with `npm run psql`. On windows you have to get the
+container id manually and use docker exec.
