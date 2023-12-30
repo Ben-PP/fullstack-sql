@@ -13,10 +13,10 @@ const userExtractor = async (request, response, next) => {
   const userFromToken = await User.findOne({
     where: { username: decodedToken.username }
   })
-  request.user = userFromToken.toJSON()
-  if (!request.user) {
+  if (!userFromToken) {
     return response.status(401).json({ error: 'user not found' })
   }
+  request.user = userFromToken.toJSON()
 
   next()
 }
