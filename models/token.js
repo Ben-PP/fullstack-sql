@@ -1,40 +1,34 @@
 const { Model, DataTypes } = require('sequelize')
-
 const { sequelize } = require('../util/db')
 
-class User extends Model {}
-
-User.init(
+class Token extends Model {}
+Token.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    username: {
-      type: DataTypes.STRING,
-      unique: true,
-      allowNull: false,
-      validate: {
-        isEmail: true
-      }
-    },
-    name: {
+    token: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    disabled: {
-      type: DataTypes.BOOLEAN,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: false
+      references: {
+        model: 'users',
+        key: 'id'
+      },
+      onDelete: 'CASCADE'
     }
   },
   {
     sequelize,
     underscored: true,
-    timestamps: true,
-    modelName: 'user'
+    timestamps: false,
+    modelName: 'token'
   }
 )
 
-module.exports = User
+module.exports = Token

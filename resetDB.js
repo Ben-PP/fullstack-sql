@@ -108,6 +108,54 @@ const blogs = [
   }
 ]
 
+const readLists = [
+  {
+    blog_id: 1,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 2,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 3,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 4,
+    user_id: 2,
+    is_read: false
+  },
+  {
+    blog_id: 5,
+    user_id: 2,
+    is_read: false
+  },
+  {
+    blog_id: 6,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 7,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 8,
+    user_id: 1,
+    is_read: false
+  },
+  {
+    blog_id: 9,
+    user_id: 2,
+    is_read: false
+  }
+]
+
 const main = async () => {
   const sequelize = new Sequelize(process.env.DB_URL, {
     logging: false
@@ -120,6 +168,7 @@ const main = async () => {
     return
   }
 
+  await sequelize.query('DROP TABLE IF EXISTS read_lists')
   await sequelize.query('DROP TABLE IF EXISTS blogs')
   await sequelize.query('DROP TABLE IF EXISTS users')
   await sequelize.query(`
@@ -143,8 +192,18 @@ const main = async () => {
     )
   `)
 
+  await sequelize.query(`
+    CREATE TABLE read_lists (
+      id SERIAL PRIMARY KEY,
+      blog_id INTEGER REFERENCES blogs (id),
+      user_id INTEGER REFERENCES users (id),
+      is_read BOOLEAN DEFAULT false
+    )
+  `)
+
   await sequelize.getQueryInterface().bulkInsert('users', users)
   await sequelize.getQueryInterface().bulkInsert('blogs', blogs)
+  await sequelize.getQueryInterface().bulkInsert('read_lists', readLists)
 
   await sequelize.close()
 }

@@ -31,7 +31,7 @@ Blog.init(
       allowNull: false,
       validate: {
         min: 1991,
-        max: new Date(Date.now().year)
+        max: new Date(Date.now()).getFullYear()
       }
     }
   },
